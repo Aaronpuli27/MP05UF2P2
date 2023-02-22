@@ -185,4 +185,6 @@ public class Enunciat {
         S'ha de repetir tot el que s'ha fet amb "drop" i comprovar amb "size" que el tamany de la taula és correcte.
 
 */
+
+
 }
