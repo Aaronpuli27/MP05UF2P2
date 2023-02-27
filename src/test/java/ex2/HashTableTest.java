@@ -365,6 +365,7 @@ class HashTableTest {
         hashTable.put("1", "elemento1");
         hashTable.put("1", "elemento2");
         hashTable.put("1", "elemento3");
+
         Assertions.assertEquals(16,hashTable.size());
     }
 
