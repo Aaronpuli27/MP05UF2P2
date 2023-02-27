@@ -15,12 +15,14 @@ public class HashTable {
     private HashEntry[] entries = new HashEntry[SIZE];
 
     public int count(){
+
         return this.ITEMS;
     }
 
     public int size(){
         return this.SIZE;
     }
+
 
     /**
      * Permet afegir un nou element a la taula.
@@ -31,14 +33,22 @@ public class HashTable {
         int hash = getHash(key);
         final HashEntry hashEntry = new HashEntry(key, value);
 
-        if(entries[hash] == null) {
+        if (entries[hash] == null) {
             entries[hash] = hashEntry;
-        }
-        else {
+        } else {
             HashEntry temp = entries[hash];
-            while(temp.next != null)
+            while (temp != null) {
+                if (temp.key.equals(key)) {
+                    temp.value = value;
+                    return;
+                }
                 temp = temp.next;
-
+            }
+            // Si no se encuentra un elemento con la misma clave, insertar al final de la lista
+            temp = entries[hash];
+            while (temp.next != null) {
+                temp = temp.next;
+            }
             temp.next = hashEntry;
             hashEntry.prev = temp;
         }
@@ -54,10 +64,16 @@ public class HashTable {
         if(entries[hash] != null) {
             HashEntry temp = entries[hash];
 
-            while( !temp.key.equals(key))
-                temp = temp.next;
+            //while( !temp.key.equals(key))
+            //  temp = temp.next;
 
-            return temp.value;
+            while (temp!=null){
+                if (temp.key.equals(key)){
+                    return temp.value;
+                }
+                temp=temp.next;
+            }
+            //return temp.value;
         }
 
         return null;
@@ -75,7 +91,7 @@ public class HashTable {
             while( !temp.key.equals(key))
                 temp = temp.next;
 
-            if(temp.prev == null) entries[hash] = null;             //esborrar element únic (no col·lissió)
+            if(temp.prev == null) entries[hash] = temp.next;             //esborrar element únic (no col·lissió)
             else{
                 if(temp.next != null) temp.next.prev = temp.prev;   //esborrem temp, per tant actualitzem l'anterior al següent
                 temp.prev.next = temp.next;                         //esborrem temp, per tant actualitzem el següent de l'anterior
