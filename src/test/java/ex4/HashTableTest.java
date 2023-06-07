@@ -1,4 +1,4 @@
-package ex2;
+package ex4;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -78,26 +78,26 @@ class HashTableTest {
     @CsvSource({"1, elemento1"})
     void test_get_enHashTableVacio() {
         HashTable hashTable = new HashTable();
-        hashTable.put("1","elemento1");
-        Assertions.assertEquals("elemento1", hashTable.get("1"));
+        hashTable.put("1",1);
+        Assertions.assertEquals(1, hashTable.get("1"));
     }
 
     @ParameterizedTest
     @CsvSource({"1, elemento1, 12, elemento2"})
     void test_get_enHashTable2() {
         HashTable hashTable = new HashTable();
-        hashTable.put("1", "elemento1");
+        hashTable.put("1", 'a');
         hashTable.put("12", "elemento2");
-        Assertions.assertEquals("elemento1", hashTable.get("1"));
+        Assertions.assertEquals('a', hashTable.get("1"));
     }
 
     @ParameterizedTest
     @CsvSource({"1, elemento1, 12, elemento2"})
     void test_get_enHashTable3() {
         HashTable hashTable = new HashTable();
-        hashTable.put("1", "elemento1");
-        hashTable.put("12", "elemento2");
-        Assertions.assertEquals("elemento2", hashTable.get("12"));
+        hashTable.put(1, "elemento1");
+        hashTable.put('a', false);
+        Assertions.assertEquals(false, hashTable.get('a'));
     }
 
     @ParameterizedTest
@@ -106,8 +106,8 @@ class HashTableTest {
         HashTable hashTable = new HashTable();
         hashTable.put("1","elemento1");
         hashTable.put("12", "elemento2");
-        hashTable.put("23", "elemento3");
-        Assertions.assertEquals("elemento3", hashTable.get("23"));
+        hashTable.put(23.0f, "elemento3");
+        Assertions.assertEquals("elemento3", hashTable.get(23.0f));
     }
 
     @ParameterizedTest

@@ -1,4 +1,4 @@
-package ex2;
+package ex3;
 
 // Original source code: https://gist.github.com/amadamala/3cdd53cb5a6b1c1df540981ab0245479
 // Modified by Fernando Porrino Serrano for academic purposes.
@@ -28,50 +28,37 @@ public class HashTable {
      * @param value El propi element que es vol afegir.
      */
     public void put(String key, String value) {
-        int hash = getHash(key);
-        final HashEntry hashEntry = new HashEntry(key, value);
-
-        if (entries[hash] == null) {
-            entries[hash] = hashEntry;
+        HashEntry entry = encontrarKey(key);
+        if (entry != null) {
+            entry.value = value;
         } else {
-            HashEntry temp = entries[hash];
-            while (temp != null) {
-                if (temp.key.equals(key)) {
-                    temp.value = value;
-                    return;
+            int hash = getHash(key);
+            entry = new HashEntry(key, value);
+
+            if (entries[hash] == null) {
+                entries[hash] = entry;
+            } else {
+                HashEntry temp = entries[hash];
+                while (temp.next != null) {
+                    temp = temp.next;
                 }
-                temp = temp.next;
+                temp.next = entry;
+                entry.prev = temp;
             }
-            // Si no se encuentra un elemento con la misma clave, insertar al final de la lista
-            temp = entries[hash];
-            while (temp.next != null) {
-                temp = temp.next;
-            }
-            temp.next = hashEntry;
-            hashEntry.prev = temp;
+            ITEMS++;
         }
-        ITEMS+=1;
     }
+
     /**
      * Permet recuperar un element dins la taula.
+     *
      * @param key La clau de l'element a trobar.
      * @return El propi element que es busca (null si no s'ha trobat).
      */
     public String get(String key) {
-        int hash = getHash(key);
-        if(entries[hash] != null) {
-            HashEntry temp = entries[hash];
-
-            //while( !temp.key.equals(key))
-            //  temp = temp.next;
-
-            while (temp!=null){
-                if (temp.key.equals(key)){
-                    return temp.value;
-                }
-                temp=temp.next;
-            }
-            //return temp.value;
+        HashEntry entry = encontrarKey(key);
+        if (entry != null) {
+            return entry.value;
         }
         return null;
     }
@@ -81,22 +68,30 @@ public class HashTable {
      * @param key La clau de l'element a trobar.
      */
     public void drop(String key) {
-        int hash = getHash(key);
-        if(entries[hash] != null) {
-
-            HashEntry temp = entries[hash];
-            while( !temp.key.equals(key))
-                temp = temp.next;
-
-            if(temp.prev == null) entries[hash] = temp.next;             //esborrar element únic (no col·lissió)
-            else{
-                if(temp.next != null) temp.next.prev = temp.prev;   //esborrem temp, per tant actualitzem l'anterior al següent
-                temp.prev.next = temp.next;                         //esborrem temp, per tant actualitzem el següent de l'anterior
+        HashEntry entry = encontrarKey(key);
+        if (entry != null) {
+            if (entry.prev == null) {
+                entries[getHash(key)] = entry.next;
+            } else {
+                if (entry.next != null) {
+                    entry.next.prev = entry.prev;
+                }
+                entry.prev.next = entry.next;
             }
             ITEMS--;
         }
+    }
 
-
+    private HashEntry encontrarKey(String key) {
+        int hash = getHash(key);
+        HashEntry entry = entries[hash];
+        while (entry != null) {
+            if (entry.key.equals(key)) {
+                return entry;
+            }
+            entry = entry.next;
+        }
+        return null;
     }
 
     private int getHash(String key) {
@@ -224,21 +219,6 @@ public class HashTable {
         }
 
         return  foundKeys;
-    }
-
-    public static void main(String[] args) {
-        HashTable hashTable = new HashTable();
-        
-        // Put some key values.
-        for(int i=0; i<30; i++) {
-            final String key = String.valueOf(i);
-            hashTable.put(key, key);
-        }
-
-        // Print the HashTable structure
-        log("****   HashTable  ***");
-        log(hashTable.toString());
-        log("\nValue for key(20) : " + hashTable.get("20") );
     }
 
     private static void log(String msg) {
