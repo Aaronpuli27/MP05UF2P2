@@ -78,7 +78,7 @@ class HashTableTest {
     @CsvSource({"1, elemento1"})
     void test_get_enHashTableVacio() {
         HashTable hashTable = new HashTable();
-        hashTable.put("1","elemento");
+        hashTable.put("1","elemento1"); //hola
         Assertions.assertEquals("elemento1", hashTable.get("1"));
     }
 
